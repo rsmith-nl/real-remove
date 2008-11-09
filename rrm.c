@@ -1,5 +1,5 @@
 /* -*- c -*-
- * Time-stamp: <2008-11-09 11:45:03 rsmith>
+ * Time-stamp: <2008-11-09 16:42:44 rsmith>
  * 
  * rrm.c
  * Overwrites files with zeros and unlinks them.
@@ -31,7 +31,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-#define BUFSIZE 512
+#define BUFSIZE 4096
 
 int main(int argc, char *argv[])
 {
@@ -41,28 +41,33 @@ int main(int argc, char *argv[])
 	char *buf;
 	size_t rv;
 
+	if (argc==1) {
+		fprintf(stderr, "usage: rrm file ...\n");
+		return 0;
+	}
+	
 	buf = calloc(1,BUFSIZE);
 	if (buf==NULL) {
-		perror("rrm cannot allocate memory: ");
+		perror("Cannot allocate memory: ");
 		return 1;
 	}
 
 	for (t=1; t<argc; t++) {
 		f = fopen(argv[t],"r+");
 		if (f==NULL) {
-			fprintf(stderr, "rrm cannot open %s. ", argv[t]);
+			fprintf(stderr, "Cannot open %s. ", argv[t]);
 			perror(NULL);
 			continue;
 		}
 		if (fseek(f, 0, SEEK_END)==-1) {
-			perror("rrm cannot seek to end-of-file: ");
+			perror("Cannot seek to end-of-file: ");
 			fclose(f);
 			continue;
 		}
 		size = ftell(f);
 		if (size==-1) {
 			fprintf(stderr, 
-				"rrm cannot establish the size of %s. ", 
+				"Cannot establish the size of %s. ", 
 				argv[t]);
 			perror(NULL);
 			fclose(f);
@@ -70,12 +75,13 @@ int main(int argc, char *argv[])
 		}
 		rewind(f);
 		do {
-			rv = fwrite(buf,BUFSIZE,1,f);
+			fwrite(buf,BUFSIZE,1,f);
 			size -= BUFSIZE;
-		} while (rv>0 & size > 0);
+		} while (size > BUFSIZE);
+		fwrite(buf,size,1,f);
 		fclose(f);
 		if (unlink(argv[t])==-1) {
-			fprintf(stderr, "rrm cannot unlink %s. ", argv[t]);
+			fprintf(stderr, "Cannot unlink %s. ", argv[t]);
 			perror(NULL);
 		}
 	}

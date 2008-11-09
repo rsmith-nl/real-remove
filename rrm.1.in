@@ -1,5 +1,5 @@
 .\" -*- nroff -*-
-.\" Time-stamp: <2008-11-09 11:43:04 rsmith>
+.\" Time-stamp: <2008-11-09 16:45:26 rsmith>
 .\"
 .\" PACKAGE.1
 .\" Copyright © 2008 R.F. Smith <rsmith@xs4all.nl> All rights reserved.
@@ -27,10 +27,10 @@
 .\"
 .TH PACKAGE 1 "DATE" "version VERSION" ""
 .SH NAME
-PACKAGE \- overwrite files with zeros and delete them.
+PACKAGE \- overwrite files with zeros and deletes them.
 .SH SYNOPSIS
 .B PACKAGE
-[filespecs] 
+file ...
 .SH DESCRIPTION
 The PACKAGE program overwrites the contents of all the files it has been
 given as arguments with zeros and unlinks them.
@@ -41,27 +41,27 @@ There are no files associated with this program.
 .SH DIAGNOSTICS
 The following messages can be generated on the console:
 .TP 0
-.I rrm cannot allocate memory
+.I Cannot allocate memory
 A call to 
 .BR calloc (3)
 failed.
 .TP 0
-.I rrm cannot open <filename>
+.I Cannot open <filename>
 A call to 
 .BR fopen (3) 
 failed.
 .TP 0
-.I rrm cannot seek to end-of-file
+.I Cannot seek to end-of-file
 A call to 
 .BR fseek (3) 
 failed.
 .TP 0
-.I rrm cannot establish the size of <filename>
+.I Cannot establish the size of <filename>
 A call to 
 .BR ftell (3)
 failed.
 .TP 0
-.I rrm cannot unlink <filename>
+.I Cannot unlink <filename>
 A call to 
 .BR unlink (2)
 failed.
