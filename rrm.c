@@ -1,5 +1,5 @@
 /* -*- c -*-
- * Time-stamp: <2008-11-09 16:42:44 rsmith>
+ * Time-stamp: <2008-12-22 13:55:28 rsmith>
  * 
  * rrm.c
  * Overwrites files with zeros and unlinks them.
@@ -30,18 +30,40 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <string.h>
+#include <strings.h>
 
 #define BUFSIZE 4096
 
+#ifndef NULL
+#define NULL (void*)0
+#endif
+
+char *newname(char *from);
+
+#ifndef NDEBUG
+/* __FUNCTION__ and varags macros are a GCC feature. */
+#  ifdef __GNUC__
+#    undef DEBUG
+#    define DEBUG(a...) fprintf(stderr,"%s, line %i, %s(): ",\
+__FILE__,__LINE__,__FUNCTION__); fprintf(stderr, ## a); fprintf(stderr, "\n")
+#  endif        /* __GNUC__ */
+#else
+#  undef DEBUG
+#  define DEBUG(a...) (void)0
+#endif          /* NDEBUG */
+
+
 int main(int argc, char *argv[])
 {
-	int t;
+	int t, rv;
 	FILE *f;
 	long size = 0;
 	char *buf;
-	size_t rv;
+	char *n;
 
 	if (argc==1) {
+		fprintf(stderr, "%s version %s\n", PACKAGE, VERSION);
 		fprintf(stderr, "usage: rrm file ...\n");
 		return 0;
 	}
@@ -73,6 +95,7 @@ int main(int argc, char *argv[])
 			fclose(f);
 			continue;		
 		}
+		DEBUG("file %s is %ld bytes.\n", argv[t], size);
 		rewind(f);
 		do {
 			fwrite(buf,BUFSIZE,1,f);
@@ -80,8 +103,16 @@ int main(int argc, char *argv[])
 		} while (size > BUFSIZE);
 		fwrite(buf,size,1,f);
 		fclose(f);
-		if (unlink(argv[t])==-1) {
-			fprintf(stderr, "Cannot unlink %s. ", argv[t]);
+		n = newname(argv[t]);
+		rv = rename(argv[t], n);
+		if (rv) {
+			fprintf(stderr, "Cannot rename %s. ", argv[t]);
+			perror(NULL);
+			n = argv[t];
+		}
+		DEBUG("renamed %s to %s\n", argv[t], n);
+		if (unlink(n)==-1) {
+			fprintf(stderr, "Cannot unlink %s. ", n);
 			perror(NULL);
 		}
 	}
@@ -89,3 +120,30 @@ int main(int argc, char *argv[])
 	return 0;
 }
 /* EOF rrm.c */
+
+char *newname(char *from) {
+	char *name;
+	size_t l, t;
+	static char buf[1024];
+
+	bzero(buf,1024);
+	if (strlen(from)>1023) {
+		return NULL;
+	}
+	strncpy(buf, from, 1023);
+	name = strrchr(buf, '/');
+	if (name == NULL) {
+		name = buf;
+	} else {
+		name++;
+	}
+	l = strlen(name);
+	if (l == 0) {
+		return NULL;
+	}
+	for (t=0; t<l; t++) {
+		name[t] = (char)(random() & 127);
+	}
+	return buf;
+}
+

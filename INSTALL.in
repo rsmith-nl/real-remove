@@ -1,4 +1,7 @@
-Installation instructions for PACKAGE VERSION, released on DATE.
+Installation instructions for _PACKAGE version _VERSION, released on _DATE.
+
+If you are not installing this program by hand from the tarball, you can
+skip these instructions. 
 
 Building the program
 --------------------
@@ -34,15 +37,15 @@ If building the program succeeded, you should issue the "su" command to
 become root, and then give the "make install" command from the source
 directory to install the program.
 
-This will install the program in the directory designated as BINDIR in the
-makefile. By default this is set to /usr/local/bin. 
+This will install the program in the directory designated as "BINDIR" in the
+makefile. By default this is set to _BINDIR. 
 
-The manual page is installed in the directory designated as MANDIR in the
-makeifle. By default this is set to /usr/local/man/man1. The manpage will
-be compressed with gzip.
+The manual page is installed in the subdirectory man1 of the directory
+designated as "MANDIR" in the makefile. By default this is set to the
+path _MANDIR. The manpage will be compressed with gzip.
 
 The files LICENSE and README will be installed in the directory designated
-as DOCSDIR in the makefile. This defaults to /usr/local/share/doc/rmm.
+as "DOCSDIR" in the makefile. This defaults to _DOCSDIR.
 
 To remove the program, use "make uninstall" from the source directory as
 root.

@@ -1,18 +1,19 @@
-# Time-stamp: <2008-11-09 16:38:46 rsmith>
+# Time-stamp: <2008-12-22 14:07:03 rsmith>
 # This is the Makefile for Real ReMove.
 
 # Package name and version: BASENAME-VMAJOR.VMINOR.VPATCH.tar.gz
 BASENAME = rrm
-VMAJOR   = 0
-VMINOR   = 2
+VMAJOR   = 1
+VMINOR   = 0
 VPATCH   = 0
 
 # Define the C compiler to be used, usually gcc.
 #CC = gcc
 
 # Add appropriate CFLAGS and LFLAGS
-CFLAGS ?= -O -Wall -Wshadow -Wpointer-arith -Wstrict-prototypes
+CFLAGS ?= -O2 -Wall -Wshadow -Wpointer-arith -Wstrict-prototypes
 CFLAGS += -pipe -fmerge-constants --fast-math -DNDEBUG
+#CFLAGS += -pipe -fmerge-constants --fast-math
 LFLAGS += -s -pipe -fmerge-constants
 
 # Base directory
@@ -65,20 +66,24 @@ $(BASENAME): $(OBJS)
 #beginskip
 
 replace.sed: Makefile
-	@echo "s/PACKAGE/$(BASENAME)/g" >replace.sed
-	@echo "s/VERSION/$(VMAJOR).$(VMINOR).$(VPATCH)/g" >>replace.sed
-	@echo "s/DATE/`date '+%Y-%m-%d'`/g" >>replace.sed
-	@echo "s|DOCSDIR|$(DOCSDIR)|g" >>replace.sed
+	@echo "s/_PACKAGE/$(BASENAME)/g" >replace.sed
+	@echo "s/_VERSION/$(VMAJOR).$(VMINOR).$(VPATCH)/g" >>replace.sed
+	@echo "s/_DATE/`date '+%Y-%m-%d'`/g" >>replace.sed
+	@echo "s|_DOCSDIR|$(DOCSDIR)|g" >>replace.sed
+	@echo "s|_MANDIR|$(MANDIR)|g" >>replace.sed
+	@echo "s|_BINDIR|$(BINDIR)|g" >>replace.sed
+	@echo "s|_CFLAGS|\"$(CFLAGS)\"|g" >>replace.sed
+	@echo "s|_LFLAGS|\"$(LFLAGS)\"|g" >>replace.sed
 
 README: README.in replace.sed
-	sed -f replace.sed README.in >README
+	sed -Ef replace.sed README.in >README
 
 INSTALL: INSTALL.in replace.sed
-	sed -f replace.sed INSTALL.in >INSTALL
+	sed -Ef replace.sed INSTALL.in >INSTALL
 
 # create the manual pages.
 $(BASENAME).1: $(BASENAME).1.in replace.sed
-	sed -f replace.sed $(BASENAME).1.in >$(BASENAME).1
+	sed -Ef replace.sed $(BASENAME).1.in >$(BASENAME).1
 
 #endskip
 # Remove all generated files.
@@ -120,10 +125,10 @@ uninstall::
 dist: clean replace.sed $(DISTFILES) $(XTRA_DIST)
 	rm -rf $(PKGDIR)
 	mkdir -p $(PKGDIR)
-	cp $(DISTFILES) $(XTRA_DIST) *.c *.h $(PKGDIR)
+	cp $(DISTFILES) $(XTRA_DIST) *.c $(PKGDIR)
 	rm -f $(PKGDIR)/Makefile
 	awk -f makemakefile.awk Makefile >$(PKGDIR)/Makefile
-	gtar -czf $(TARFILE) $(PKGDIR)
+	tar -czf $(TARFILE) $(PKGDIR)
 	rm -rf $(PKGDIR)
 	md5 $(TARFILE) >$(TARFILE).md5
 	gpg -a -b $(TARFILE)
@@ -140,7 +145,7 @@ backup: clean $(LOG)
 	mkdir -p /tmp/$(PKGDIR)
 	cp -R -p * /tmp/$(PKGDIR)
 	CURDIR=`pwd`
-	cd /tmp ; gtar -czf $(CURDIR)/$(BACKUP) $(PKGDIR)
+	cd /tmp ; tar -czf $(CURDIR)/$(BACKUP) $(PKGDIR)
 	rm -rf /tmp/$(PKGDIR)
 
 # Run 'make depend' to get the dependencies.

@@ -1,12 +1,13 @@
 Introduction
 ------------
-This is the readme file for version VERSION of the 'PACKAGE' program,
-released on DATE.
+This is the readme file for version _VERSION of the '_PACKAGE' program,
+released on _DATE.
 
 Purpose
 -------
-This program takes filenames as arguments, overwrites them with zeros and
-then unlinks them.
+This program takes filenames as arguments. It overwrites the contents of
+these files with zeros, replaces the filename with a random one and then
+unlinks the files.
 
 License
 -------
@@ -17,8 +18,8 @@ Building the program
 --------------------
 For building on FreeBSD and other systems with the GNU toolset, see the
 instructions in the file INSTALL. After installation, a manual page for
-this program can be read with 'man PACKAGE'. Additional documentation is
-available in DOCDIR.
+this program can be read with 'man _PACKAGE'. Additional documentation is
+available in _DOCSDIR.
 
 If anyone wants to donate makefiles or project files for other systems and
 compilers I will be happy to include them in the distribution.
