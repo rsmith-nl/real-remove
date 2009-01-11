@@ -1,11 +1,11 @@
-# Time-stamp: <2008-12-22 14:07:03 rsmith>
+# Time-stamp: <2009-01-11 13:20:36 rsmith>
 # This is the Makefile for Real ReMove.
 
 # Package name and version: BASENAME-VMAJOR.VMINOR.VPATCH.tar.gz
 BASENAME = rrm
 VMAJOR   = 1
 VMINOR   = 0
-VPATCH   = 0
+VPATCH   = 1
 
 # Define the C compiler to be used, usually gcc.
 #CC = gcc

@@ -1,0 +1,6 @@
+The rrm program (really rm) overwrites the files it is given as arguments
+with zeros. It then renames them with a string of random characters.
+Finally it unlinks them. This should be a reasonably secure way of deleting
+files. 
+
+WWW: http://www.xs4all.nl/~rsmith/software/

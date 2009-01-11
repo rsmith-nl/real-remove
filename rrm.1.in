@@ -1,5 +1,5 @@
 .\" -*- nroff -*-
-.\" Time-stamp: <2008-12-22 13:59:16 rsmith>
+.\" Time-stamp: <2009-01-11 13:19:19 rsmith>
 .\"
 .\" _PACKAGE.1
 .\" Copyright © 2008 R.F. Smith <rsmith@xs4all.nl> All rights reserved.
@@ -80,8 +80,8 @@ failed.
 .BR rename (2),
 _DOCSDIR/README
 .SH BUGS
-The names of overwritten files are contained in the filesystem
-datastructures and are not overwritten.
+It is possible to retrieve the length of the original filename. It might be
+possible to retrieve the zerod-out data with advanced techniques.
 .SH AUTHOR
 The _PACKAGE software is copyright 2008 by Roland Smith
 <rsmith@xs4all.nl>. The latest version of this program is available at:
