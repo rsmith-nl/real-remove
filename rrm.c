@@ -1,5 +1,5 @@
 /* -*- c -*-
- * Time-stamp: <2008-12-22 13:55:28 rsmith>
+ * Time-stamp: <2009-01-17 12:09:37 rsmith>
  * 
  * rrm.c
  * Overwrites files with zeros and unlinks them.
@@ -67,12 +67,13 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "usage: rrm file ...\n");
 		return 0;
 	}
-	
 	buf = calloc(1,BUFSIZE);
 	if (buf==NULL) {
 		perror("Cannot allocate memory: ");
 		return 1;
 	}
+
+	srandomdev();
 
 	for (t=1; t<argc; t++) {
 		f = fopen(argv[t],"r+");
@@ -142,7 +143,10 @@ char *newname(char *from) {
 		return NULL;
 	}
 	for (t=0; t<l; t++) {
-		name[t] = (char)(random() & 127);
+	repeat_char:
+		name[t] = (char)(random() & 128);
+		if (name[t]==0)
+			goto repeat_char;
 	}
 	return buf;
 }
