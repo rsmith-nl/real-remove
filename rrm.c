@@ -1,5 +1,5 @@
 /* -*- c -*-
- * Time-stamp: <2009-01-17 12:09:37 rsmith>
+ * Time-stamp: <2009-05-09 11:01:16 rsmith>
  * 
  * rrm.c
  * Overwrites files with zeros and unlinks them.
@@ -33,7 +33,7 @@
 #include <string.h>
 #include <strings.h>
 
-#define BUFSIZE 4096
+#define BUFSIZE 1048576
 
 #ifndef NULL
 #define NULL (void*)0
