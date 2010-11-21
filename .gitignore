@@ -1,0 +1,8 @@
+*.[oa]
+*.1
+*~
+rrm
+INSTALL
+README
+rrm-*.tar.gz*
+
