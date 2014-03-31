@@ -7,13 +7,10 @@ VMAJOR   = 1
 VMINOR   = 0
 VPATCH   = 2
 
-# Define the C compiler to be used, usually gcc.
-CC = clang
-
 # Add appropriate CFLAGS and LFLAGS
-CFLAGS ?= -O2 -Wall -Wshadow -Wpointer-arith -Wstrict-prototypes
+CFLAGS ?= -O2 -Wall
 CFLAGS += -pipe -DNDEBUG
-LFLAGS += -s -pipe -fmerge-constants
+LFLAGS += -s -pipe
 
 # Base directory
 PREFIX ?= /usr/local
