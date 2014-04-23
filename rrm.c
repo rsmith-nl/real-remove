@@ -1,9 +1,6 @@
-/* -*- c -*-
- * Time-stamp: <2009-05-09 11:01:16 rsmith>
- *
- * rrm.c
- * Overwrites files with zeros and unlinks them.
- * Copyright © 2008 R.F. Smith <rsmith@xs4all.nl>. All rights reserved.
+/* rrm.c
+ * Overwrites files with random data and unlinks them.
+ * Copyright © 2008,2014 R.F. Smith <rsmith@xs4all.nl>. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -27,11 +24,13 @@
  * SUCH DAMAGE.
  */
 
-#include <stdio.h>
+#include <fcntl.h>
+#include <sys/stat.h>
 #include <unistd.h>
-#include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
-#include <strings.h>
+#include <stdlib.h>
+#include <ctype.h>
 
 #define BUFSIZE 1048576
 
@@ -39,6 +38,7 @@
 #define NULL (void*)0
 #endif
 
+off_t filesize(char *name);
 char           *newname(char *from);
 
 #ifndef NDEBUG
@@ -47,6 +47,9 @@ char           *newname(char *from);
 #undef DEBUG
 #define DEBUG(a...) fprintf(stderr,"%s, line %i, %s(): ",\
 __FILE__,__LINE__,__FUNCTION__); fprintf(stderr, ## a); fprintf(stderr, "\n")
+#else
+#undef DEBUG
+#define DEBUG(a...) fprintf(stderr, ## a); fprintf(stderr, "\n")
 #endif                          /* __GNUC__ */
 #else
 #undef DEBUG
@@ -54,11 +57,11 @@ __FILE__,__LINE__,__FUNCTION__); fprintf(stderr, ## a); fprintf(stderr, "\n")
 #endif                          /* NDEBUG */
 
 
-int 
+int
 main(int argc, char *argv[])
 {
-    int             t, rv;
-    FILE           *f;
+    int             t, rv, rnd;
+    int             f;
     long            size = 0;
     char           *buf;
     char           *n;
@@ -73,45 +76,52 @@ main(int argc, char *argv[])
         perror("Cannot allocate memory: ");
         return 1;
     }
-    srandomdev();
-
+    rnd = open("/dev/random", O_RDONLY);
+    if (rnd == -1) {
+        fprintf(stderr, "Cannot open random device.");
+        return 2;
+    }
     for (t = 1; t < argc; t++) {
-        f = fopen(argv[t], "r+");
-        if (f == NULL) {
-            fprintf(stderr, "Cannot open %s. ", argv[t]);
-            perror(NULL);
-            continue;
-        }
-        if (fseek(f, 0, SEEK_END) == -1) {
-            perror("Cannot seek to end-of-file: ");
-            fclose(f);
-            continue;
-        }
-        size = ftell(f);
+        size = filesize(argv[t]);
         if (size == -1) {
             fprintf(stderr,
                     "Cannot establish the size of %s. ",
                     argv[t]);
             perror(NULL);
-            fclose(f);
             continue;
         }
         DEBUG("file %s is %ld bytes.\n", argv[t], size);
-        rewind(f);
+        f = open(argv[t], O_RDWR);
+        if (f == -1) {
+            fprintf(stderr, "Cannot open %s. ", argv[t]);
+            perror(NULL);
+            continue;
+        }
         do {
-            fwrite(buf, BUFSIZE, 1, f);
+            rv = read(rnd, (void*)buf, BUFSIZE);
+            if (rv != BUFSIZE) {
+                fprintf(stderr, "Not enough random data.");
+                close(f);
+            }
+            write(f, buf, BUFSIZE);
             size -= BUFSIZE;
         } while (size > BUFSIZE);
-        fwrite(buf, size, 1, f);
-        fclose(f);
+        rv = read(rnd, (void*)buf, size);
+        if (rv != size) {
+            fprintf(stderr, "Not enough random data.");
+        } else {
+            write(f, buf, size);
+        }
+        close(f);
         n = newname(argv[t]);
         rv = rename(argv[t], n);
         if (rv) {
             fprintf(stderr, "Cannot rename %s. ", argv[t]);
             perror(NULL);
             n = argv[t];
+        } else {
+            DEBUG("renamed \"%s\" to \"%s\"\n", argv[t], n);
         }
-        DEBUG("renamed %s to %s\n", argv[t], n);
         if (unlink(n) == -1) {
             fprintf(stderr, "Cannot unlink %s. ", n);
             perror(NULL);
@@ -120,15 +130,28 @@ main(int argc, char *argv[])
     free(buf);
     return 0;
 }
-/* EOF rrm.c */
+
+
+off_t
+filesize(char *name)
+{
+    struct stat st;
+
+    if (stat(name, &st) == 0)
+        return st.st_size;
+
+    return -1;
+}
 
 char           *
 newname(char *from)
 {
     char           *name;
+    char            newchar;
     size_t          l, t;
     static char     buf[1024];
 
+    srandomdev();
     bzero(buf, 1024);
     if (strlen(from) > 1023) {
         return NULL;
@@ -145,10 +168,11 @@ newname(char *from)
         return NULL;
     }
     for (t = 0; t < l; t++) {
-repeat_char:
-        name[t] = (char)(random() & 128);
-        if (name[t] == 0)
-            goto repeat_char;
+        do {
+            newchar = (char)(random()/16777215);
+        } while (isalpha(newchar) == 0);
+        name[t] = newchar;
     }
     return buf;
 }
+/* EOF rrm.c */

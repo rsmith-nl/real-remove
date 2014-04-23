@@ -4,8 +4,8 @@
 # Package name and version: BASENAME-VMAJOR.VMINOR.VPATCH.tar.gz
 BASENAME = rrm
 VMAJOR   = 1
-VMINOR   = 0
-VPATCH   = 2
+VMINOR   = 1
+VPATCH   = 0
 
 # Add appropriate CFLAGS and LFLAGS
 CFLAGS ?= -O2 -Wall
