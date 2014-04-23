@@ -38,7 +38,7 @@
 #define NULL (void*)0
 #endif
 
-off_t filesize(char *name);
+off_t           filesize(char *name);
 char           *newname(char *from);
 
 #ifndef NDEBUG
@@ -98,7 +98,7 @@ main(int argc, char *argv[])
             continue;
         }
         do {
-            rv = read(rnd, (void*)buf, BUFSIZE);
+            rv = read(rnd, (void *)buf, BUFSIZE);
             if (rv != BUFSIZE) {
                 fprintf(stderr, "Not enough random data.");
                 close(f);
@@ -106,7 +106,7 @@ main(int argc, char *argv[])
             write(f, buf, BUFSIZE);
             size -= BUFSIZE;
         } while (size > BUFSIZE);
-        rv = read(rnd, (void*)buf, size);
+        rv = read(rnd, (void *)buf, size);
         if (rv != size) {
             fprintf(stderr, "Not enough random data.");
         } else {
@@ -135,7 +135,7 @@ main(int argc, char *argv[])
 off_t
 filesize(char *name)
 {
-    struct stat st;
+    struct stat     st;
 
     if (stat(name, &st) == 0)
         return st.st_size;
@@ -169,7 +169,7 @@ newname(char *from)
     }
     for (t = 0; t < l; t++) {
         do {
-            newchar = (char)(random()/16777215);
+            newchar = (char)(random() / 16777215);
         } while (isalpha(newchar) == 0);
         name[t] = newchar;
     }
