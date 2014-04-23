@@ -148,6 +148,10 @@ backup: clean $(LOG)
 depend: $(SRCS)
 	$(CC) -MM $(CFLAGS) $(SRCS) >depend
 
+indent: rrm.c
+	indent rrm.c -ncdb -i4 -nut -nfc1 -nfcb
+	rm -f rrm.c.BAK
+
 #endskip
 # Dependencies after this line.
 include depend
