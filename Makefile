@@ -1,4 +1,3 @@
-# Time-stamp: <2009-01-17 12:10:13 rsmith>
 # This is the Makefile for Real ReMove.
 
 # Package name and version: BASENAME-VMAJOR.VMINOR.VPATCH.tar.gz
@@ -8,9 +7,9 @@ VMINOR   = 1
 VPATCH   = 0
 
 # Add appropriate CFLAGS and LFLAGS
-CFLAGS ?= -O2 -Wall
-CFLAGS += -pipe -DNDEBUG
-LFLAGS += -s -pipe
+CFLAGS += -DNDEBUG
+#CFLAGS += -Weverything # for all warnings with clang.
+LFLAGS += -s -static
 
 # Base directory
 PREFIX ?= /usr/local
@@ -20,9 +19,6 @@ BINDIR = $(PREFIX)/bin
 
 # Location where the manual-page will be installed.
 MANDIR = $(PREFIX)/man
-
-# Location where the documentatiion will be installed.
-DOCSDIR= $(PREFIX)/share/doc/$(BASENAME)
 
 ##### Maintainer stuff goes here:
 
@@ -65,7 +61,6 @@ replace.sed: Makefile
 	@echo "s/_PACKAGE/$(BASENAME)/g" >replace.sed
 	@echo "s/_VERSION/$(VMAJOR).$(VMINOR).$(VPATCH)/g" >>replace.sed
 	@echo "s/_DATE/`date '+%Y-%m-%d'`/g" >>replace.sed
-	@echo "s|_DOCSDIR|$(DOCSDIR)|g" >>replace.sed
 	@echo "s|_MANDIR|$(MANDIR)|g" >>replace.sed
 	@echo "s|_BINDIR|$(BINDIR)|g" >>replace.sed
 	@echo "s|_CFLAGS|\"$(CFLAGS)\"|g" >>replace.sed
@@ -90,7 +85,6 @@ clean::
 	rm -f README INSTALL $(BASENAME).1 $(BASENAME).5
 #endskip
 
-
 # Install the program and manual page. You should be root to do this.
 install: $(BASENAME) $(BASENAME).1 LICENSE README
 	@if [ `id -u` != 0 ]; then \
@@ -102,10 +96,6 @@ install: $(BASENAME) $(BASENAME).1 LICENSE README
 	install -d $(MANDIR)/man1
 	install -m 644 $(BASENAME).1 $(MANDIR)/man1
 	gzip -f $(MANDIR)/man1/$(BASENAME).1
-.if !defined(NOPORTDOCS)
-	install -d $(DOCSDIR)
-	install -m 644 LICENSE README $(DOCSDIR)
-.endif
 
 uninstall::
 	@if [ `id -u` != 0 ]; then \
@@ -114,7 +104,6 @@ uninstall::
 	fi
 	rm -f $(BINDIR)/$(BASENAME)
 	rm -f $(MANDIR)/man1/$(BASENAME).1*
-	rm -rf $(DOCSDIR)
 
 #beginskip
 # Build a tar distribution file. Only needed for the maintainer.

@@ -60,7 +60,8 @@ __FILE__,__LINE__,__FUNCTION__); fprintf(stderr, ## a); fprintf(stderr, "\n")
 int
 main(int argc, char *argv[])
 {
-    int             t, rv, rnd;
+    int             t, rnd;
+    ssize_t         rv;
     int             f;
     long            size = 0;
     char           *buf;
@@ -106,11 +107,11 @@ main(int argc, char *argv[])
             write(f, buf, BUFSIZE);
             size -= BUFSIZE;
         } while (size > BUFSIZE);
-        rv = read(rnd, (void *)buf, size);
+        rv = read(rnd, (void *)buf, (size_t) size);
         if (rv != size) {
             fprintf(stderr, "Not enough random data.");
         } else {
-            write(f, buf, size);
+            write(f, buf, (size_t) size);
         }
         close(f);
         n = newname(argv[t]);
