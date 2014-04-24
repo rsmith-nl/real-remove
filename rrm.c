@@ -38,8 +38,8 @@
 #define NULL (void*)0
 #endif
 
-off_t           filesize(char *name);
-char           *newname(char *from);
+off_t   filesize(char *name);
+char   *newname(char *from);
 
 #ifndef NDEBUG
 /* __FUNCTION__ and varags macros are a GCC feature. */
@@ -50,22 +50,22 @@ __FILE__,__LINE__,__FUNCTION__); fprintf(stderr, ## a); fprintf(stderr, "\n")
 #else
 #undef DEBUG
 #define DEBUG(a...) fprintf(stderr, ## a); fprintf(stderr, "\n")
-#endif                          /* __GNUC__ */
+#endif                                  /* __GNUC__ */
 #else
 #undef DEBUG
 #define DEBUG(a...) (void)0
-#endif                          /* NDEBUG */
+#endif                                  /* NDEBUG */
 
 
 int
 main(int argc, char *argv[])
 {
-    int             t, rnd;
-    ssize_t         rv;
-    int             f;
-    long            size = 0;
-    char           *buf;
-    char           *n;
+    int     t, rnd;
+    ssize_t rv;
+    int     f;
+    long    size = 0;
+    char   *buf;
+    char   *n;
 
     if (argc == 1) {
         fprintf(stderr, "%s version %s\n", PACKAGE, VERSION);
@@ -107,11 +107,11 @@ main(int argc, char *argv[])
             write(f, buf, BUFSIZE);
             size -= BUFSIZE;
         } while (size > BUFSIZE);
-        rv = read(rnd, (void *)buf, (size_t) size);
+        rv = read(rnd, (void *)buf, (size_t)size);
         if (rv != size) {
             fprintf(stderr, "Not enough random data.");
         } else {
-            write(f, buf, (size_t) size);
+            write(f, buf, (size_t)size);
         }
         close(f);
         n = newname(argv[t]);
@@ -136,7 +136,7 @@ main(int argc, char *argv[])
 off_t
 filesize(char *name)
 {
-    struct stat     st;
+    struct stat st;
 
     if (stat(name, &st) == 0)
         return st.st_size;
@@ -144,13 +144,13 @@ filesize(char *name)
     return -1;
 }
 
-char           *
+char   *
 newname(char *from)
 {
-    char           *name;
-    char            newchar;
-    size_t          l, t;
-    static char     buf[1024];
+    char   *name;
+    char    newchar;
+    size_t  l, t;
+    static char buf[1024];
 
     srandomdev();
     bzero(buf, 1024);
@@ -176,4 +176,5 @@ newname(char *from)
     }
     return buf;
 }
+
 /* EOF rrm.c */

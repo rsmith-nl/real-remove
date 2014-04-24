@@ -137,8 +137,9 @@ backup: clean $(LOG)
 depend: $(SRCS)
 	$(CC) -MM $(CFLAGS) $(SRCS) >depend
 
+# Indent settings are in “.indent.pro”
 indent: rrm.c
-	indent rrm.c -ncdb -i4 -nut -nfc1 -nfcb
+	indent rrm.c
 	rm -f rrm.c.BAK
 
 #endskip
