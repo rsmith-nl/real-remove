@@ -38,24 +38,23 @@
 #define NULL (void*)0
 #endif
 
-off_t   filesize(char *name);
-char   *newname(char *from);
+#ifndef PACKAGE
+#define PACKAGE "rrm"
+#endif
+
+#ifndef VERSION
+#define VERSION "unknown"
+#endif
 
 #ifndef NDEBUG
-/* __FUNCTION__ and varags macros are a GCC feature. */
-#ifdef __GNUC__
-#undef DEBUG
-#define DEBUG(a...) fprintf(stderr,"%s, line %i, %s(): ",\
-__FILE__,__LINE__,__FUNCTION__); fprintf(stderr, ## a); fprintf(stderr, "\n")
+#define DEBUG(...) fprintf(stderr,"%s, line %i: ",\
+__FILE__,__LINE__); fprintf(stderr, __VA_ARGS__); fprintf(stderr, "\n")
 #else
-#undef DEBUG
-#define DEBUG(a...) fprintf(stderr, ## a); fprintf(stderr, "\n")
-#endif                                  /* __GNUC__ */
-#else
-#undef DEBUG
-#define DEBUG(a...) (void)0
+#define DEBUG(...) (void)0
 #endif                                  /* NDEBUG */
 
+off_t   filesize(char *name);
+char   *newname(char *from);
 
 int
 main(int argc, char *argv[])
@@ -70,6 +69,7 @@ main(int argc, char *argv[])
     if (argc == 1) {
         fprintf(stderr, "%s version %s\n", PACKAGE, VERSION);
         fprintf(stderr, "usage: rrm file ...\n");
+        DEBUG("Debugging output activated.");
         return 0;
     }
     buf = calloc(1, BUFSIZE);
@@ -77,7 +77,7 @@ main(int argc, char *argv[])
         perror("Cannot allocate memory: ");
         return 1;
     }
-    rnd = open("/dev/random", O_RDONLY);
+    rnd = open("/dev/urandom", O_RDONLY);
     if (rnd == -1) {
         fprintf(stderr, "Cannot open random device.");
         return 2;
@@ -103,6 +103,7 @@ main(int argc, char *argv[])
             if (rv != BUFSIZE) {
                 fprintf(stderr, "Not enough random data.");
                 close(f);
+                break;
             }
             write(f, buf, BUFSIZE);
             size -= BUFSIZE;
@@ -110,6 +111,8 @@ main(int argc, char *argv[])
         rv = read(rnd, (void *)buf, (size_t)size);
         if (rv != size) {
             fprintf(stderr, "Not enough random data.");
+            close(f);
+            continue;
         } else {
             write(f, buf, (size_t)size);
         }
