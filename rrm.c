@@ -77,7 +77,7 @@ main(int argc, char *argv[])
         perror("Cannot allocate memory: ");
         return 1;
     }
-    rnd = open("/dev/urandom", O_RDONLY);
+    rnd = open("/dev/random", O_RDONLY);
     if (rnd == -1) {
         fprintf(stderr, "Cannot open random device.");
         return 2;
