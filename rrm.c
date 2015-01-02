@@ -77,11 +77,6 @@ main(int argc, char *argv[])
         perror("Cannot allocate memory: ");
         return 1;
     }
-    rnd = open("/dev/random", O_RDONLY);
-    if (rnd == -1) {
-        fprintf(stderr, "Cannot open random device.");
-        return 2;
-    }
     for (t = 1; t < argc; t++) {
         size = filesize(argv[t]);
         if (size == -1) {
@@ -97,6 +92,11 @@ main(int argc, char *argv[])
             fprintf(stderr, "Cannot open %s. ", argv[t]);
             perror(NULL);
             continue;
+        }
+        rnd = open("/dev/random", O_RDONLY);
+        if (rnd == -1) {
+            fprintf(stderr, "Cannot open random device.");
+            return 2;
         }
         do {
             rv = read(rnd, (void *)buf, BUFSIZE);
@@ -117,6 +117,7 @@ main(int argc, char *argv[])
             write(f, buf, (size_t)size);
         }
         close(f);
+        close(rnd);
         n = newname(argv[t]);
         rv = rename(argv[t], n);
         if (rv) {
