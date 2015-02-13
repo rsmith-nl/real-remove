@@ -87,10 +87,6 @@ clean::
 
 # Install the program and manual page. You should be root to do this.
 install: $(BASENAME) $(BASENAME).1 LICENSE README
-	@if [ `id -u` != 0 ]; then \
-		echo "You must be root to install the program!"; \
-		exit 1; \
-	fi
 	install -d $(BINDIR)
 	install -m 755 $(BASENAME) $(BINDIR)
 	install -d $(MANDIR)/man1
