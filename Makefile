@@ -3,12 +3,12 @@
 # Package name and version: BASENAME-VMAJOR.VMINOR.VPATCH.tar.gz
 BASENAME = rrm
 VMAJOR   = 1
-VMINOR   = 1
+VMINOR   = 2
 VPATCH   = 0
 
 # Add appropriate CFLAGS and LFLAGS
 CFLAGS += -DNDEBUG
-#CFLAGS += -Weverything # for all warnings with clang.
+CFLAGS += -Weverything # for all warnings with clang.
 LFLAGS += -s -static
 
 # Base directory
@@ -52,7 +52,7 @@ CFLAGS += $(VERSION) $(PACKAGE)
 all: $(BASENAME) $(BASENAME).1 README INSTALL
 
 # builds a binary.
-$(BASENAME): $(OBJS)
+$(BASENAME): $(OBJS) Makefile
 	$(CC) $(LFLAGS) $(LDIRS) -o $(BASENAME) $(OBJS) $(LIBS)
 
 #beginskip

@@ -1,6 +1,7 @@
 /* rrm.c
  * Overwrites files with random data and unlinks them.
- * Copyright © 2008,2014 R.F. Smith <rsmith@xs4all.nl>. All rights reserved.
+ * Copyright © 2008,2014,2015 R.F. Smith <rsmith@xs4all.nl>.
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -59,7 +60,7 @@ char   *newname(char *from);
 int
 main(int argc, char *argv[])
 {
-    int     t, rnd;
+    int     t;
     ssize_t rv;
     int     f;
     long    size = 0;
@@ -93,43 +94,40 @@ main(int argc, char *argv[])
             perror(NULL);
             continue;
         }
-        rnd = open("/dev/random", O_RDONLY);
-        if (rnd == -1) {
-            fprintf(stderr, "Cannot open random device.");
-            return 2;
-        }
-        do {
-            rv = read(rnd, (void *)buf, BUFSIZE);
-            if (rv != BUFSIZE) {
-                fprintf(stderr, "Not enough random data.");
-                close(f);
+        while (size > BUFSIZE) {
+            if (write(f, buf, BUFSIZE) == -1) {
+                perror(NULL);
                 break;
+            } else {
+                size -= BUFSIZE;
+                DEBUG("%ld bytes remaining\n", size);
             }
-            write(f, buf, BUFSIZE);
-            size -= BUFSIZE;
-        } while (size > BUFSIZE);
-        rv = read(rnd, (void *)buf, (size_t)size);
-        if (rv != size) {
-            fprintf(stderr, "Not enough random data.");
-            close(f);
-            continue;
+        }
+        if (write(f, buf, (size_t)size) == -1) {
+            perror(NULL);
         } else {
-            write(f, buf, (size_t)size);
+            DEBUG("overwrote %ld remaining bytes.\n", size);
         }
         close(f);
-        close(rnd);
         n = newname(argv[t]);
-        rv = rename(argv[t], n);
-        if (rv) {
-            fprintf(stderr, "Cannot rename %s. ", argv[t]);
-            perror(NULL);
+        if (n == NULL) {
+            fprintf(stderr, "Cannot generate new filename.");
             n = argv[t];
         } else {
-            DEBUG("renamed \"%s\" to \"%s\"\n", argv[t], n);
+            rv = rename(argv[t], n);
+            if (rv) {
+                fprintf(stderr, "Cannot rename %s. ", argv[t]);
+                perror(NULL);
+                n = argv[t];
+            } else {
+                DEBUG("renamed \"%s\" to \"%s\"\n", argv[t], n);
+            }
         }
         if (unlink(n) == -1) {
             fprintf(stderr, "Cannot unlink %s. ", n);
             perror(NULL);
+        } else {
+            DEBUG("Unlinked \"%s\"\n", n);
         }
     }
     free(buf);
@@ -154,9 +152,9 @@ newname(char *from)
     char   *name;
     char    newchar;
     size_t  l, t;
+    int     rnd;
     static char buf[1024];
 
-    srandomdev();
     bzero(buf, 1024);
     if (strlen(from) > 1023) {
         return NULL;
@@ -172,12 +170,18 @@ newname(char *from)
     if (l == 0) {
         return NULL;
     }
+    rnd = open("/dev/random", O_RDONLY);
+    if (rnd == -1) {
+        fprintf(stderr, "Cannot open random device.");
+        return NULL;
+    }
     for (t = 0; t < l; t++) {
         do {
-            newchar = (char)(random() / 16777215);
+            read(rnd, &newchar, 1);
         } while (isalpha(newchar) == 0);
         name[t] = newchar;
     }
+    close(rnd);
     return buf;
 }
 

@@ -1,8 +1,8 @@
 .\" -*- nroff -*-
-.\" Time-stamp: <2009-01-11 13:19:19 rsmith>
 .\"
 .\" _PACKAGE.1
-.\" Copyright © 2008 R.F. Smith <rsmith@xs4all.nl> All rights reserved.
+.\" Copyright © 2008,2009,2015 R.F. Smith <rsmith@xs4all.nl>
+.\" All rights reserved.
 .\"
 .\" Redistribution and use in source and binary forms, with or without
 .\" modification, are permitted provided that the following conditions
@@ -34,7 +34,7 @@ file ...
 .SH DESCRIPTION
 The _PACKAGE program overwrites the contents of all the files it has been
 given as arguments with zeros, renames them to a random generated name and
-unlinks them. 
+unlinks them.
 .SH OPTIONS
 This programs takes no options.
 .SH FILES
@@ -43,38 +43,38 @@ There are no files associated with this program.
 The following messages can be generated on the console:
 .TP 0
 .I Cannot allocate memory
-A call to 
+A call to
 .BR calloc (3)
 failed.
 .TP 0
 .I Cannot open <filename>
-A call to 
-.BR fopen (3) 
+A call to
+.BR fopen (3)
 failed.
 .TP 0
 .I Cannot seek to end-of-file
-A call to 
-.BR fseek (3) 
+A call to
+.BR fseek (3)
 failed.
 .TP 0
 .I Cannot establish the size of <filename>
-A call to 
+A call to
 .BR ftell (3)
 failed.
 .TP 0
 .I Cannot unlink <filename>
-A call to 
+A call to
 .BR unlink (2)
 failed.
 .TP 0
 .I Cannot rename <filename>
-A call to 
+A call to
 .BR rename (2)
 failed.
 .SH SEE ALSO
 .BR calloc (3),
-.BR fopen (3), 
-.BR fseek (3), 
+.BR fopen (3),
+.BR fseek (3),
 .BR ftell (3),
 .BR unlink (2),
 .BR rename (2),
@@ -83,9 +83,9 @@ _DOCSDIR/README
 It is possible to retrieve the length of the original filename. It might be
 possible to retrieve the zerod-out data with advanced techniques.
 .SH AUTHOR
-The _PACKAGE software is copyright 2008 by Roland Smith
+The _PACKAGE software is copyright 2008,2014,2015 by Roland Smith
 <rsmith@xs4all.nl>. The latest version of this program is available at:
-.B http://www.xs4all.nl/~rsmith/software/
+.B http://rsmith.home.xs4all.nl/category/software.html
 .SH LICENSE
 Copyright (c) 2008  R.F. Smith <rsmith@xs4all.nl>. All rights reserved.
 .P
@@ -93,11 +93,11 @@ Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions
 are met:
 .TP
-1. 
+1.
 Redistributions of source code must retain the above copyright notice, this
 list of conditions and the following disclaimer.
 .TP
-2. 
+2.
 Redistributions in binary form must reproduce the above copyright notice,
 this list of conditions and the following disclaimer in the documentation
 and/or other materials provided with the distribution.
