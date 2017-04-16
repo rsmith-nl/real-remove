@@ -34,9 +34,7 @@ SRCS = rrm.c
 # Object files.
 OBJS = $(SRCS:.c=.o)
 
-#beginskip
 BACKUP  = $(BASENAME)-backup-$(VMAJOR).$(VMINOR).$(VPATCH).tar.gz
-#endskip
 
 # Version number
 VERSION = -DVERSION=\"$(VMAJOR).$(VMINOR).$(VPATCH)\"
@@ -50,8 +48,6 @@ all: $(BASENAME) $(BASENAME).1 INSTALL
 # builds a binary.
 $(BASENAME): $(OBJS) Makefile
 	$(CC) $(LDFLAGS) $(LDIRS) -o $(BASENAME) $(OBJS) $(LIBS)
-
-#beginskip
 
 replace.sed: Makefile
 	@echo "s/_PACKAGE/$(BASENAME)/g" >replace.sed
@@ -69,13 +65,10 @@ INSTALL: INSTALL.in replace.sed
 $(BASENAME).1: $(BASENAME).1.in replace.sed
 	sed -Ef replace.sed $(BASENAME).1.in >$(BASENAME).1
 
-#endskip
 # Remove all generated files.
 clean::
 	rm -f $(OBJS) $(BASENAME) *~ core gmon.out $(BACKUP) $(LOG)
-#beginskip
 	rm -f INSTALL $(BASENAME).1 $(BASENAME).5
-#endskip
 
 # Install the program and manual page. You should be root to do this.
 install: $(BASENAME) $(BASENAME).1 LICENSE README
@@ -93,7 +86,6 @@ uninstall::
 	rm -f $(BINDIR)/$(BASENAME)
 	rm -f $(MANDIR)/man1/$(BASENAME).1*
 
-#beginskip
 # Run 'make depend' to get the dependencies.
 depend: $(SRCS)
 	$(CC) -MM $(CFLAGS) $(SRCS) >depend
@@ -103,6 +95,5 @@ indent: rrm.c
 	indent rrm.c
 	rm -f rrm.c.BAK
 
-#endskip
 # Dependencies after this line.
 include depend
