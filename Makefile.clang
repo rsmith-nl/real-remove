@@ -1,12 +1,12 @@
 # This is the Makefile for Real ReMove.
-CC=/usr/local/bin/clang40
-LD=/usr/local/bin/ld.gold
+CC=clang40
+LD=ld.gold
 LDFLAGS+=-fuse-ld=gold -Wl,--plugin /usr/local/llvm40/lib/LLVMgold.so
 
 # Package name and version: BASENAME-VMAJOR.VMINOR.VPATCH.tar.gz
 BASENAME = rrm
 VMAJOR   = 1
-VMINOR   = 2
+VMINOR   = 3
 VPATCH   = 0
 
 # Add appropriate CFLAGS and LDFLAGS
@@ -14,6 +14,7 @@ CFLAGS= -O3
 CFLAGS += -DNDEBUG
 CFLAGS += -Weverything # for all warnings with clang.
 CFLAGS += -flto
+# Build a static binary by default.
 LDFLAGS += -s -static
 
 # Base directory
