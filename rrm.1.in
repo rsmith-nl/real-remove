@@ -1,7 +1,7 @@
 .\" -*- nroff -*-
 .\"
 .\" _PACKAGE.1
-.\" Copyright © 2008,2009,2015 R.F. Smith <rsmith@xs4all.nl>
+.\" Copyright © 2008 R.F. Smith <rsmith@xs4all.nl>
 .\" All rights reserved.
 .\"
 .\" Redistribution and use in source and binary forms, with or without
@@ -35,6 +35,9 @@ file ...
 The _PACKAGE program overwrites the contents of all the files it has been
 given as arguments with zeros, renames them to a random generated name and
 unlinks them.
+.PP
+Note that this will not work on e.g. copy-on-write file systems and
+log-structured filesystems.
 .SH OPTIONS
 This programs takes no options.
 .SH FILES
@@ -83,9 +86,9 @@ _DOCSDIR/README
 It is possible to retrieve the length of the original filename. It might be
 possible to retrieve the zerod-out data with advanced techniques.
 .SH AUTHOR
-The _PACKAGE software is copyright 2008,2014,2015 by Roland Smith
+The _PACKAGE software is copyright 2008 by Roland Smith
 <rsmith@xs4all.nl>. The latest version of this program is available at:
-.B http://rsmith.home.xs4all.nl/category/software.html
+.B https://github.com/rsmith-nl/real-remove.git
 .SH LICENSE
 Copyright (c) 2008  R.F. Smith <rsmith@xs4all.nl>. All rights reserved.
 .P
