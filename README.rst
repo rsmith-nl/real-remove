@@ -6,6 +6,15 @@ This program takes filenames as arguments. It overwrites the contents of
 these files with zeros, replaces the filename with a random one and then
 unlinks the files.
 
+On modern hard disks, this seems to be enough to obliterate a file, *depending
+of the filesystem that is used!*
+
+It will e.g. not work on log-structured file systems or copy-on-write file
+systems. On such file systems there is no guarantee that writing to the
+beginning of a file actually overwrites the same physical area that the content
+originally was in.
+
+
 License
 -------
 See the LICENSE file.
@@ -37,6 +46,7 @@ There is a special ``Makefile.clang`` that tries to build the software using
 link-time optimizations for clang 4.0. Only use this if you know what you are
 doing.
 
+
 Installing the program
 ----------------------
 
@@ -49,4 +59,4 @@ makefile. By default this is set to ``/usr/local/bin``.
 
 The manual page is installed in the subdirectory man1 of the directory
 designated as "MANDIR" in the makefile. By default this is set to the
-path ``/usr/local/man``. The manpage will be compressed with gzip.
+path ``/usr/local/man``. The manual page will be compressed with gzip.
