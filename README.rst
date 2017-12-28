@@ -12,7 +12,7 @@ of the filesystem that is used!*
 It will e.g. not work on log-structured file systems or copy-on-write file
 systems. On such file systems there is no guarantee that writing to the
 beginning of a file actually overwrites the same physical area that the content
-originally was in.
+originally was in. This probably includes SSD and flash drives.
 
 
 License
@@ -41,10 +41,6 @@ It is usually not necessary to edit the makefile below the line
 To build the program, simply issue the "make" command. This should work
 without producing errors. Building the program has been tested with both
 ``gcc`` and ``clang``, and with both FreeBSD's ``make`` and GNU ``make``.
-
-There is a special ``Makefile.clang`` that tries to build the software using
-link-time optimizations for clang 4.0. Only use this if you know what you are
-doing.
 
 
 Installing the program
