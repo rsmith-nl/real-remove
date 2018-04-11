@@ -1,6 +1,6 @@
 /* rrm.c
  * Overwrites files with random data and unlinks them.
- * Copyright © 2008,2014,2015 R.F. Smith <rsmith@xs4all.nl>.
+ * Copyright © 2008-2017 R.F. Smith <rsmith@xs4all.nl>.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

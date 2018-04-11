@@ -1,4 +1,4 @@
-rrm is copyright © 2008 R.F.Smith <rsmith@xs4all.nl>. 
+rrm is copyright © 2008-2017 R.F.Smith <rsmith@xs4all.nl>.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
