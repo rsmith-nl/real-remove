@@ -66,7 +66,7 @@ clean::
 	rm -f INSTALL $(BASENAME).1 $(BASENAME).5
 
 # Install the program and manual page. You should be root to do this.
-install: $(BASENAME) $(BASENAME).1 LICENSE
+install: $(BASENAME) $(BASENAME).1
 	install -d $(BINDIR)
 	install -m 755 $(BASENAME) $(BINDIR)
 	install -d $(MANDIR)/man1
