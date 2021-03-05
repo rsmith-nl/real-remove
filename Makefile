@@ -1,14 +1,15 @@
 # This is the Makefile for Real ReMove.
 
 # Package name and version: BASENAME-VMAJOR.VMINOR.VPATCH.tar.gz
-BASENAME = rrm
-VMAJOR   = 1
-VMINOR   = 3
-VPATCH   = 0
+BASENAME:= rrm
+VMAJOR:= 1
+VMINOR:= 4
+VPATCH:= 0
 
 # Add appropriate CFLAGS and LDFLAGS
-CFLAGS ?= -O3
-CFLAGS += -DNDEBUG
+CFLAGS = -Os -Wall
+# Uncomment the setting below for development.
+#CFLAGS = -Os -Weverything -pedantic
 # Build a static binary by default.
 LDFLAGS += -s -static
 
@@ -23,20 +24,17 @@ MANDIR = $(PREFIX)/man
 
 ##### Maintainer stuff goes here:
 # Source files.
-SRCS = rrm.c
+SRCS:= rrm.c
 
 ##### No editing necessary beyond this point
 # Object files.
-OBJS = $(SRCS:.c=.o)
+OBJS:= $(SRCS:.c=.o)
 
-BACKUP  = $(BASENAME)-backup-$(VMAJOR).$(VMINOR).$(VPATCH).tar.gz
+BACKUP:= $(BASENAME)-backup-$(VMAJOR).$(VMINOR).$(VPATCH).tar.gz
 
 # Version number
-VERSION = -DVERSION=\"$(VMAJOR).$(VMINOR).$(VPATCH)\"
-# Program name
-PACKAGE = -DPACKAGE=\"$(BASENAME)\"
-# Add to CFLAGS
-CFLAGS += $(VERSION) $(PACKAGE)
+VERSION:= -DVERSION=\"$(VMAJOR).$(VMINOR).$(VPATCH)\"
+CFLAGS += $(VERSION)
 
 all: $(BASENAME) $(BASENAME).1 INSTALL
 
