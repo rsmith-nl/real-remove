@@ -3,7 +3,7 @@ Really removing files
 =====================
 
 This program takes filenames as arguments. It overwrites the contents of
-these files with zeros, replaces the filename with a random one and then
+these files with random data, replaces the filename with a random one and then
 unlinks the files.
 
 On modern hard disks, this seems to be enough to obliterate a file, *depending
@@ -12,7 +12,7 @@ of the filesystem that is used!*
 It will e.g. not work on log-structured file systems or copy-on-write file
 systems. On such file systems there is no guarantee that writing to the
 beginning of a file actually overwrites the same physical area that the content
-originally was in. This probably includes SSD and flash drives.
+originally was in. This includes SSD and flash drives.
 
 
 License
