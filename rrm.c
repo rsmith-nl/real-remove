@@ -2,21 +2,21 @@
  * vim:fileencoding=utf-8:fdm=marker:ft=c
  * Overwrites files with random data and unlinks them.
  *
- * Copyright © 2008-2021 R.F. Smith <rsmith@xs4all.nl>.
+ * Copyright © 2008 R.F. Smith <rsmith@xs4all.nl>.
  * SPDX-License-Identifier: 2BSD
  * Created: 2008-11-09T12:02:44+01:00
- * Last modified: 2021-03-05T23:03:10+0100
+ * Last modified: 2023-03-24T19:14:33+0100
  */
 
+#include <errno.h>
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <sys/mman.h>
 #include <ctype.h>
-
-#define BUFSIZE 1048576
 
 #ifndef VERSION
 #define VERSION "unknown"
@@ -24,6 +24,7 @@
 
 off_t   filesize(char *name);
 char *  newname(char *from);
+void    report(char *func, char *path);
 
 int
 main(int argc, char *argv[])
@@ -31,7 +32,7 @@ main(int argc, char *argv[])
     int     t;
     ssize_t rv;
     int     f;
-    long    size = 0;
+    off_t    size = 0;
     char   *buf;
     char   *n;
 
@@ -40,34 +41,26 @@ main(int argc, char *argv[])
         fprintf(stderr, "usage: rrm file ...\n");
         return 0;
     }
-    buf = malloc(BUFSIZE);
-    if (buf == NULL) {
-        perror("Cannot allocate memory: ");
-        return 1;
-    }
     for (t = 1; t < argc; t++) {
         size = filesize(argv[t]);
         if (size == -1) {
-            perror(argv[t]);
+            report("filesize", argv[t]);
             continue;
         }
+
         f = open(argv[t], O_RDWR);
         if (f == -1) {
-            perror(argv[t]);
+            report("open(2)", argv[t]);
             continue;
         }
-        while (size > BUFSIZE) {
-            arc4random_buf((void *)buf, BUFSIZE);
-            if (write(f, buf, BUFSIZE) == -1) {
-                perror(argv[t]);
-                break;
-            } else {
-                size -= BUFSIZE;
-            }
+        buf = mmap(0, size, PROT_READ|PROT_WRITE, MAP_PRIVATE, f, 0);
+        if (buf == MAP_FAILED) {
+            report("mmap(2)", argv[t]);
+            close(f);
+            continue;
         }
-        if (write(f, buf, (size_t)size) == -1) {
-            perror(argv[t]);
-        }
+        arc4random_buf((void *)buf, size);
+        munmap(buf, size);
         close(f);
         n = newname(argv[t]);
         if (n == NULL) {
@@ -75,16 +68,22 @@ main(int argc, char *argv[])
         } else {
             rv = rename(argv[t], n);
             if (rv) {
-                perror(argv[t]);
+                report("rename(2)", argv[t]);
                 n = argv[t];
             }
         }
         if (unlink(n) == -1) {
-            perror(argv[t]);
+            report("unlink(2)", argv[t]);
         }
     }
-    free(buf);
     return 0;
+}
+
+
+void
+report(char *func, char *path)
+{
+    fprintf(stderr, "%s failed for “%s”: %s\n", func, path, strerror(errno));
 }
 
 
@@ -125,7 +124,7 @@ newname(char *from)
     }
     rnd = open("/dev/random", O_RDONLY);
     if (rnd == -1) {
-        perror(NULL);
+        fprintf(stderr, "opening /dev/random failed.");
         return NULL;
     }
     for (t = 0; t < l; t++) {

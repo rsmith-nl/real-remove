@@ -2,12 +2,12 @@
 
 # Package name and version: BASENAME-VMAJOR.VMINOR.VPATCH.tar.gz
 BASENAME:= rrm
-VMAJOR:= 1
-VMINOR:= 4
+VMAJOR:= 2
+VMINOR:= 0
 VPATCH:= 0
 
 # Add appropriate CFLAGS and LDFLAGS
-CFLAGS = -Os -Wall
+CFLAGS = -Os -Wall -Wextra -pedantic
 # Uncomment the setting below for development.
 #CFLAGS = -Os -Weverything -pedantic
 # Build a static binary by default.
